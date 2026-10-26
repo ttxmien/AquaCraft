@@ -1,4 +1,4 @@
-> ***This app is based on `your_aquarium` created by NCMV***
+***This app is based on `your_aquarium` created by NCMV***
 
 # Bể cá của bạn — Website mô phỏng bể cá 3D
 
