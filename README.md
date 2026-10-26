@@ -1,3 +1,5 @@
+> ***This app is based on `your_aquarium` created by NCMV***
+
 # Bể cá của bạn — Website mô phỏng bể cá 3D
 
 Một MVP chạy trực tiếp trên trình duyệt cho dự án **Bể cá của bạn**. Người dùng có thể sắp xếp san hô, đá và cây thủy sinh, điều chỉnh mực nước, thêm cá, thả thức ăn và quan sát hành vi bơi trong không gian 3D.
