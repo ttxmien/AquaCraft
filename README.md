@@ -43,6 +43,7 @@ Bạn cũng có thể cài extension **Live Server** trong VS Code, mở `index.
 | Điều chỉnh mực nước | Kéo thanh **Water level** |
 | Đổi giao diện sáng / tối | Nút mặt trời / mặt trăng ở thanh trên cùng |
 | Ẩn khu vực chỉnh sửa | Chọn **Hide studio** để mở rộng vùng hiển thị bể cá |
+| Xem mức no của cá | Phần trăm hiển thị ngay phía trên từng con cá và cập nhật khi cá đói hoặc ăn |
 
 Thao tác click chuột phải để xóa dành cho máy tính. Trên thiết bị cảm ứng, hãy chọn vật thể và dùng nút **Remove**.
 
@@ -79,6 +80,13 @@ Các đường dẫn module trong project đều là relative path, vì vậy c�
 - Cần internet để tải `three@0.180.0` và OrbitControls từ `cdn.jsdelivr.net`.
 - Lần đầu mở trang cần truy cập CDN. Nếu muốn chạy offline hoặc kiểm soát dependency trong production, hãy vendoring Three.js module và addon tương ứng vào project rồi cập nhật import map trong `index.html`.
 - Khuyến nghị máy tính có GPU rời hoặc GPU tích hợp tương đối mới để chạy shadow và hiệu ứng transparency mượt hơn. Renderer giới hạn device pixel ratio ở mức 2.
+
+## 5. Lịch sử cập nhật
+
+| Phiên bản | Nội dung |
+| --- | --- |
+| v1.0 | Thêm hiển thị phần trăm mức no ngay phía trên mỗi con cá |
+| v0.0 | Phiên bản gốc (Create by NCMV) |
 
 ## License
 

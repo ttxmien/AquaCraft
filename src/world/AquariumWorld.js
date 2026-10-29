@@ -445,6 +445,7 @@ export class AquariumWorld {
     for (const [id, agent] of this.fishAgents) {
       if (!ids.has(id)) {
         this.fishRoot.remove(agent.root);
+        agent.dispose();
         this.fishAgents.delete(id);
       }
     }
@@ -895,6 +896,7 @@ export class AquariumWorld {
     window.removeEventListener('pointerup', this.onPointerUp);
     this.canvas.removeEventListener('contextmenu', this.onContextMenu);
     this.controls.dispose();
+    for (const agent of this.fishAgents.values()) agent.dispose();
     this.renderer.dispose();
     this.host.removeChild(this.renderer.domElement);
   }

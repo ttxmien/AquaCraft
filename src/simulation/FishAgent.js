@@ -18,6 +18,42 @@ const clampMagnitude = (vector, max) => {
   return vector;
 };
 
+function createSatietyLabel() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 144;
+  canvas.height = 60;
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  const material = new THREE.SpriteMaterial({ map: texture, transparent: true, depthTest: false });
+  const sprite = new THREE.Sprite(material);
+  sprite.scale.set(1.15, 0.48, 1);
+  sprite.position.set(0, 1.4, 0);
+  sprite.renderOrder = 5;
+  return { canvas, texture, sprite, material, value: -1 };
+}
+
+function updateSatietyLabel(label, satiety) {
+  const percent = Math.round(satiety);
+  if (label.value === percent) return;
+
+  label.value = percent;
+  const context = label.canvas.getContext('2d');
+  context.clearRect(0, 0, label.canvas.width, label.canvas.height);
+  context.fillStyle = 'rgba(5, 21, 28, 0.88)';
+  context.beginPath();
+  context.roundRect(4, 4, 136, 52, 24);
+  context.fill();
+  context.strokeStyle = percent < 25 ? '#f0a887' : '#91e2d3';
+  context.lineWidth = 3;
+  context.stroke();
+  context.fillStyle = percent < 25 ? '#ffc3a5' : '#e8fff5';
+  context.font = 'bold 32px Arial, sans-serif';
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+  context.fillText(`${percent}%`, 72, 30);
+  label.texture.needsUpdate = true;
+}
+
 export class FishAgent {
   constructor(definition, waterLevel, index = 0) {
     this.id = definition.id;
@@ -34,6 +70,9 @@ export class FishAgent {
     this.state = Math.random() < 0.18 ? 'resting' : 'exploring';
     this.stateTimer = this.state === 'resting' ? rand(4.5, 8) : rand(36, 64);
     this.satiety = rand(36, 82);
+    this.satietyLabel = createSatietyLabel();
+    this.root.add(this.satietyLabel.sprite);
+    updateSatietyLabel(this.satietyLabel, this.satiety);
     this.foodSearchCooldown = rand(16, 28);
     this.targetFoodId = null;
     this.targetFood = null;
@@ -110,6 +149,7 @@ export class FishAgent {
   update(dt, context) {
     this.age += dt;
     this.satiety = Math.max(0, this.satiety - dt * 0.34);
+    updateSatietyLabel(this.satietyLabel, this.satiety);
     this.stateTimer -= dt;
     this.foodSearchCooldown = Math.max(0, this.foodSearchCooldown - dt);
     const { agents, foods, obstacles, bounds, waterLevel } = context;
@@ -272,11 +312,23 @@ export class FishAgent {
     if (this.state === 'seeking food' && this.targetFood && this.position.distanceTo(this.targetFood.mesh.position) < 0.5) {
       const eatenId = this.targetFoodId;
       this.satiety = Math.min(100, this.satiety + 38);
+      updateSatietyLabel(this.satietyLabel, this.satiety);
       this.foodSearchCooldown = rand(22, 34);
       this.setState('exploring', rand(28, 44));
       this.chooseExplorationWaypoint(waterLevel);
       return eatenId;
     }
     return null;
+  }
+
+  dispose() {
+    const materials = new Set();
+    this.root.traverse(object => {
+      object.geometry?.dispose();
+      if (Array.isArray(object.material)) object.material.forEach(material => materials.add(material));
+      else if (object.material) materials.add(object.material);
+    });
+    for (const material of materials) material.dispose();
+    this.satietyLabel.texture.dispose();
   }
 }
