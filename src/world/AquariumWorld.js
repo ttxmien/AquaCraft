@@ -462,6 +462,22 @@ export class AquariumWorld {
     for (const agent of this.fishAgents.values()) agent.root.traverse(obj => { if (obj.isMesh) this.fishPickMeshes.push(obj); });
   }
 
+  hasFishBetween(first, second) {
+    const segment = second.position.clone().sub(first.position);
+    const lengthSq = segment.lengthSq();
+    if (lengthSq < 0.0001) return false;
+
+    for (const other of this.fishAgents.values()) {
+      if (other === first || other === second) continue;
+      const offset = other.position.clone().sub(first.position);
+      const along = offset.dot(segment) / lengthSq;
+      if (along <= 0 || along >= 1) continue;
+      const closest = first.position.clone().addScaledVector(segment, along);
+      if (other.position.distanceTo(closest) < 0.65) return true;
+    }
+    return false;
+  }
+
   updateSelection(state) {
     const selectedId = state.selectedDecoration;
     if (selectedId && this.decorObjects.has(selectedId)) {
@@ -736,6 +752,14 @@ export class AquariumWorld {
         if (node?.userData.fishId) agent = this.fishAgents.get(node.userData.fishId);
         if (agent) {
           this.store.selectFish(agent.id);
+          const firstParent = this.store.getState().breedingSelection
+            ? this.fishAgents.get(this.store.getState().breedingSelection.fishId)
+            : null;
+          this.store.selectBreedingParent(
+            { id: agent.id, species: agent.species, satiety: agent.satiety },
+            this.time,
+            firstParent ? this.hasFishBetween(firstParent, agent) : false,
+          );
           return;
         }
       }

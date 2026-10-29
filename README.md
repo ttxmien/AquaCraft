@@ -44,6 +44,7 @@ Bạn cũng có thể cài extension **Live Server** trong VS Code, mở `index.
 | Đổi giao diện sáng / tối | Nút mặt trời / mặt trăng ở thanh trên cùng |
 | Ẩn khu vực chỉnh sửa | Chọn **Hide studio** để mở rộng vùng hiển thị bể cá |
 | Xem mức no của cá | Phần trăm hiển thị ngay phía trên từng con cá và cập nhật khi cá đói hoặc ăn |
+| Cho cá sinh sản | Click chọn cá bố/mẹ thứ nhất khi mức no trên 60%, rồi click cá cùng loài (cũng trên 60%) trong tối đa 30 giây. Không thể chọn cùng một con hai lần; hai cá bố mẹ không được có cá khác nằm giữa |
 
 Thao tác click chuột phải để xóa dành cho máy tính. Trên thiết bị cảm ứng, hãy chọn vật thể và dùng nút **Remove**.
 
@@ -85,6 +86,7 @@ Các đường dẫn module trong project đều là relative path, vì vậy c�
 
 | Phiên bản | Nội dung |
 | --- | --- |
+| v1.1 | Thêm sinh sản chủ động giữa hai cá cùng loài: cả hai no trên 60%, được chọn trong tối đa 30 giây và không có cá khác ở giữa |
 | v1.0 | Thêm hiển thị phần trăm mức no ngay phía trên mỗi con cá |
 | v0.0 | Phiên bản gốc (Create by NCMV) |
 

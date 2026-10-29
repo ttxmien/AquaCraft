@@ -163,6 +163,8 @@ kbd { font: inherit; color: var(--muted); }
 .satiety-label { margin-left: auto; }
 .satiety-track { height: 4px; margin: 9px 0 11px; overflow: hidden; border-radius: 5px; background: var(--line); }
 .satiety-track i { display: block; width: 72%; height: 100%; background: var(--accent); border-radius: inherit; transition: width .2s; }
+.breeding-hint { margin: 8px 0; color: var(--accent); font-size: 8px; line-height: 1.5; }
+.breeding-hint.hidden { display: none; }
 .release-button { width: 100%; color: var(--danger); }
 .feed-instruction { position: absolute; z-index: 12; left: 50%; transform: translateX(-50%); bottom: 75px; display: flex; align-items: center; gap: 9px; padding: 11px 15px; border: 1px solid rgba(241,204,143,.38); border-radius: 11px; background: rgba(25, 38, 37, .93); color: #f1cc8f; box-shadow: var(--shadow); font-size: 8px; font-weight: 700; letter-spacing: .1em; white-space: nowrap; }
 .feed-instruction.hidden { display: none; }

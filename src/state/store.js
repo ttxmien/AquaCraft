@@ -21,6 +21,7 @@ export class AquariumStore {
       feedingMode: false,
       selectedDecoration: null,
       selectedFish: null,
+      breedingSelection: null,
       foodCount: 0,
       toast: null,
     };
@@ -129,10 +130,10 @@ export class AquariumStore {
     this.set({ decorations, selectedDecoration: null, toast: 'Last decoration action undone' });
   }
 
-  addFish(species) {
+  addFish(species, { bred = false } = {}) {
     if (this.state.fish.length >= 18) {
       this.set({ toast: 'Your aquarium is full — 18 fish maximum' });
-      return;
+      return null;
     }
     const id = `fish-${++this.sequence}`;
     this.set({
@@ -140,8 +141,59 @@ export class AquariumStore {
       selectedFish: id,
       selectedDecoration: null,
       feedingMode: false,
-      toast: `${this.labelFor(species)} joined your aquarium`,
+      breedingSelection: null,
+      toast: bred ? `A baby ${this.labelFor(species)} was born` : `${this.labelFor(species)} joined your aquarium`,
     });
+    return id;
+  }
+
+  selectBreedingParent(fish, selectedAt, hasFishBetween = false) {
+    const pending = this.state.breedingSelection;
+    if (!pending || selectedAt - pending.selectedAt > 30) {
+      if (fish.satiety <= 60) {
+        this.set({ toast: `${this.labelFor(fish.species)} needs more than 60% satiety to breed` });
+        return;
+      }
+      this.set({
+        breedingSelection: {
+          fishId: fish.id,
+          species: fish.species,
+          satiety: fish.satiety,
+          selectedAt,
+        },
+        selectedFish: fish.id,
+        selectedDecoration: null,
+        feedingMode: false,
+        toast: `First ${this.labelFor(fish.species)} selected (${Math.round(fish.satiety)}%). Select a matching fish within 30 seconds`,
+      });
+      return;
+    }
+
+    if (pending.fishId === fish.id) {
+      this.set({ toast: 'Select a different fish as the second parent' });
+      return;
+    }
+    if (fish.satiety <= 60) {
+      this.set({ toast: `${this.labelFor(fish.species)} needs more than 60% satiety to breed` });
+      return;
+    }
+    if (pending.species !== fish.species) {
+      this.set({ toast: 'The two parent fish must be the same color' });
+      return;
+    }
+    if (hasFishBetween) {
+      this.set({ toast: 'Another fish is between the selected parents' });
+      return;
+    }
+
+    this.addFish(fish.species, { bred: true });
+  }
+
+  expireBreedingSelection(now) {
+    const pending = this.state.breedingSelection;
+    if (pending && now - pending.selectedAt > 30) {
+      this.set({ breedingSelection: null, toast: 'Breeding selection expired' });
+    }
   }
 
   selectFish(id) {
@@ -152,6 +204,7 @@ export class AquariumStore {
     this.set({
       fish: this.state.fish.filter(f => f.id !== id),
       selectedFish: null,
+      breedingSelection: this.state.breedingSelection?.fishId === id ? null : this.state.breedingSelection,
       toast: 'Fish released from the aquarium',
     });
   }

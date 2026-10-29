@@ -90,6 +90,13 @@ function updateFishCard(id) {
   $('#fishState').textContent = stateName;
   $('#fishSatiety').textContent = `${satiety}% full`;
   $('#satietyFill').style.width = `${satiety}%`;
+  const breedingSelection = store.getState().breedingSelection;
+  const isParentSelected = breedingSelection?.fishId === id;
+  $('#breedingHint').classList.toggle('hidden', !isParentSelected);
+  if (isParentSelected) {
+    const remaining = Math.max(0, 30 - (world.time - breedingSelection.selectedAt));
+    $('#breedingHint').textContent = `First parent selected · choose a matching fish within ${Math.ceil(remaining)}s`;
+  }
 }
 
 store.subscribe(updateUI);
@@ -174,6 +181,7 @@ window.addEventListener('keydown', event => {
 });
 
 hudTimer = setInterval(() => {
+  if (world) store.expireBreedingSelection(world.time);
   const id = store.getState().selectedFish;
   if (id) updateFishCard(id);
 }, 260);
